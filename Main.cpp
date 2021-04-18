@@ -33,45 +33,44 @@ public:
 	olc::vi2d WorldToScreen(olc::vf2d worldPos) {
 		return { (int)((worldPos.x + 0.5f) * ScreenWidth()), (int)((worldPos.y + 0.5f) * ScreenHeight()) };
 	}
+	//(a+b)^2= a^2 + 2ab + b^2
 	olc::vf2d CMultiply(olc::vf2d a, olc::vf2d b) {
 		return { a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x };
 	}
+	//Euler, thanks my man
 	olc::vf2d Cis(float theta) {
 		return { std::cos(theta), std::sin(theta) };
 	}
 	olc::vf2d Lerp(olc::vf2d a, olc::vf2d b, float partialTime) {
+		//Why is this so simple
 		return a * (1 - partialTime) + b * partialTime;
 	}
+	//Epic function defined for [0;1[
 	olc::vf2d f(float t) {
 		int i = (int)(vertices_world.size() * t);
 		float partialTime = t * vertices_world.size() - i;
 		return Lerp(vertices_world[i], vertices_world[(i + 1) % vertices_world.size()], partialTime);
 	}
+	//Maths magic 1
 	olc::vf2d Cn(int n) {
 		olc::vf2d sum = { 0,0 };
-		for (float t = 0; t < 1; t += integral_delta_t)
-		{
-			sum += CMultiply(f(t), Cis(-n * 2 * M_PI * t)) * integral_delta_t;
-		}
+		for (float t = 0; t < 1; t += integral_delta_t) sum += CMultiply(f(t), Cis(-n * 2 * M_PI * t)) * integral_delta_t;
 		return sum;
 	}
+	//Maths magic 2
 	olc::vf2d VecN(int n, float t) {
 		return CMultiply(c_vals[n], Cis(n * 2 * M_PI * t));
 	}
 
 	void UpdateCVals() {
 		c_vals.clear();
-		for (int i = -(num_vecs - 1) / 2; i <= num_vecs / 2; i++)
-		{
-			c_vals.insert(std::pair<int, olc::vf2d>(i, Cn(i)));
-		}
+		for (int i = -(num_vecs - 1) / 2; i <= num_vecs / 2; i++) c_vals.insert(std::pair<int, olc::vf2d>(i, Cn(i)));
 	}
 
 
 public:
 	bool OnUserCreate() override
 	{
-		// Called once at the start, so create things here
 		return true;
 	}
 	bool OnUserUpdate(float fElapsedTime) override
@@ -79,7 +78,7 @@ public:
 		Clear(olc::VERY_DARK_BLUE);
 		auto mouse = GetMousePos();
 
-		//Move stuff
+		//Move selected vertex
 		if (selected != -1)
 		{
 			vertices_screen[selected] = mouse - offset;
@@ -90,16 +89,13 @@ public:
 				time_last_updated = time;
 			}
 		}
+
+		//Handle hover/selection
 		if (selected == -1)
 		{
+			//Find vertex cursor is above
 			hover = -1;
-			for (int i = 0; i < vertices_screen.size(); i++)
-			{
-				if ((mouse - vertices_screen[i]).mag2() <= 120)
-				{
-					hover = i;
-				}
-			}
+			for (int i = 0; i < vertices_screen.size(); i++) if ((mouse - vertices_screen[i]).mag2() <= 120) { hover = i; break; }
 		}
 		if (GetMouse(0).bPressed)
 		{
@@ -118,13 +114,10 @@ public:
 				UpdateCVals();
 			}
 		}
-		if (GetMouse(0).bReleased)
+		if (GetMouse(0).bReleased && selected != -1)
 		{
-			if (selected != -1)
-			{
-				selected = -1;
-				UpdateCVals();
-			}
+			selected = -1;
+			UpdateCVals();
 		}
 		//Render stuff
 		DrawStringDecal({ 5,5 }, "hover: " + std::to_string(hover), olc::WHITE, { {2.0f},{2.0f} });
@@ -149,7 +142,6 @@ public:
 	}
 };
 
-
 int main()
 {
 	int num_vecs = 21;
@@ -159,7 +151,7 @@ int main()
 	std::cout << "Press <c> to open config, press any other key to start!" << std::endl;
 	if ('c' == (char)_getch())
 	{
-		std::cout << "num_vecs (n>0)(default n=21): ";
+		std::cout << "num_vecs (n>0)(preferably odd)(default n=21): ";
 		std::getline(std::cin, str);
 		try
 		{
@@ -189,6 +181,7 @@ int main()
 		if (integral_delta_t <= 0 || integral_delta_t > 1) integral_delta_t = 0.001;
 		std::cout << integral_delta_t << std::endl;
 	}
+	//When the easy part is almost as long as the crazy part
 
 
 	FourierApp demo = FourierApp(num_vecs,rotation_per_sec,integral_delta_t);
