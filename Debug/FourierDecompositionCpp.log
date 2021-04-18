@@ -1,0 +1,10 @@
+﻿  Main.cpp
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(54,45): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(59,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(96,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(136,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(137,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(157,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(158,32): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(192,78): warning C4305: '=': truncation from 'double' to 'float'
+  FourierDecompositionCpp.vcxproj -> C:\Users\Toma\source\repos\FourierDecompositionCpp\Debug\FourierDecompositionCpp.exe
