@@ -127,17 +127,17 @@ public:
 			UpdateCVals();
 		}
 		//Render stuff
-		DrawStringDecal({5,975}, "Press d to toggle debug mode", olc::WHITE, { {2.0f},{2.0f} });
+		DrawString({5,975}, "Press d to toggle debug mode", olc::WHITE, 2.0f);
 		if (debug)
 		{
-			DrawStringDecal({ 5,5 }, "curr_time: " + std::to_string(curr_time), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,25 }, "time_last_updated: " + std::to_string(time_last_updated), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,45 }, "hover: " + std::to_string(hover), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,65 }, "selected: " + std::to_string(selected), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,85 }, "num_vecs: " + std::to_string(num_vecs), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,105 }, "rotation_per_sec: " + std::to_string(rotation_per_sec), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,125 }, "integral_delta_t: " + std::to_string(integral_delta_t), olc::WHITE, { {2.0f},{2.0f} });
-			DrawStringDecal({ 5,145 }, "drawn_points.size(): " + std::to_string(drawn_points.size()), olc::WHITE, { {2.0f},{2.0f} });
+			DrawString({ 5,5 }, "curr_time: " + std::to_string(curr_time), olc::WHITE, 2.0f);
+			DrawString({ 5,25 }, "time_last_updated: " + std::to_string(time_last_updated), olc::WHITE, 2.0f);
+			DrawString({ 5,45 }, "hover: " + std::to_string(hover), olc::WHITE, 2.0f);
+			DrawString({ 5,65 }, "selected: " + std::to_string(selected), olc::WHITE, 2.0f);
+			DrawString({ 5,85 }, "num_vecs: " + std::to_string(num_vecs), olc::WHITE, 2.0f);
+			DrawString({ 5,105 }, "rotation_per_sec: " + std::to_string(rotation_per_sec), olc::WHITE, 2.0f);
+			DrawString({ 5,125 }, "integral_delta_t: " + std::to_string(integral_delta_t), olc::WHITE, 2.0f);
+			DrawString({ 5,145 }, "drawn_points.size(): " + std::to_string(drawn_points.size()), olc::WHITE, 2.0f);
 		}
 		for (int i = 0; i < vertices_screen.size(); i++) DrawLine(vertices_screen[i], vertices_screen[(i + 1) % vertices_screen.size()], olc::Pixel(0, 255, 0, 127));
 		for (int i = 0; i < vertices_screen.size(); i++) FillCircle(vertices_screen[i], 10, i == hover ? olc::Pixel(150, 255, 0) : olc::GREEN);

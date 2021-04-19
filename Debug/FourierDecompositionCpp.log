@@ -2,6 +2,15 @@
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(59,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(64,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(105,22): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(130,67): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(133,79): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(134,96): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(135,72): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(136,78): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(137,78): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(138,95): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(139,95): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
+C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(140,101): warning C4244: 'argument': conversion from 'float' to 'uint32_t', possible loss of data
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(142,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(143,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\Toma\source\repos\FourierDecompositionCpp\FourierDecompositionCpp\Main.cpp(177,30): warning C4305: 'initializing': truncation from 'double' to 'float'
