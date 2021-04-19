@@ -22,10 +22,12 @@ public:
 	float integral_delta_t;
 	std::vector<olc::vi2d> vertices_screen;
 	std::vector<olc::vf2d> vertices_world;
+	std::vector<olc::vf2d> drawn_points;
 	std::map<int, olc::vf2d> c_vals;
-	float time = 0;
+	float curr_time = 0;
 	olc::vi2d offset = { 0,0 };
 	float time_last_updated = 0;
+	bool debug = false;
 
 	olc::vf2d ScreenToWorld(olc::vi2d screenPos) {
 		return { (float)screenPos.x / ScreenWidth() - 0.5f, (float)screenPos.y / ScreenHeight() - 0.5f };
@@ -65,6 +67,8 @@ public:
 	void UpdateCVals() {
 		c_vals.clear();
 		for (int i = -(num_vecs - 1) / 2; i <= num_vecs / 2; i++) c_vals.insert(std::pair<int, olc::vf2d>(i, Cn(i)));
+		drawn_points.clear();
+		time_last_updated = curr_time;
 	}
 
 
@@ -75,18 +79,21 @@ public:
 	}
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		Clear(olc::VERY_DARK_BLUE);
+		Clear(olc::Pixel(0,0,31));
 		auto mouse = GetMousePos();
-
+		//Handle keys
+		if (GetKey(olc::D).bPressed)
+		{
+			debug = !debug;
+		}
 		//Move selected vertex
 		if (selected != -1)
 		{
 			vertices_screen[selected] = mouse - offset;
 			vertices_world[selected] = ScreenToWorld(mouse - offset);
-			if (time - time_last_updated > 0.001f)
+			if (curr_time - time_last_updated > .00000005f * num_vecs / integral_delta_t)
 			{
 				UpdateCVals();
-				time_last_updated = time;
 			}
 		}
 
@@ -120,24 +127,46 @@ public:
 			UpdateCVals();
 		}
 		//Render stuff
-		DrawStringDecal({ 5,5 }, "hover: " + std::to_string(hover), olc::WHITE, { {2.0f},{2.0f} });
-		DrawStringDecal({ 5,25 }, "selected: " + std::to_string(selected), olc::WHITE, { {2.0f},{2.0f} });
-		DrawStringDecal({ 5,45 }, "num_vecs: " + std::to_string(num_vecs), olc::WHITE, { {2.0f},{2.0f} });
-		DrawStringDecal({ 5,65 }, "rotation_per_sec: " + std::to_string(rotation_per_sec), olc::WHITE, { {2.0f},{2.0f} });
-		DrawStringDecal({ 5,85 }, "integral_delta_t: " + std::to_string(integral_delta_t), olc::WHITE, { {2.0f},{2.0f} });
-		for (int i = 0; i < vertices_screen.size(); i++) DrawLine(vertices_screen[i], vertices_screen[(i + 1) % vertices_screen.size()]);
-		for (int i = 0; i < vertices_screen.size(); i++) FillCircle(vertices_screen[i], 10, i == hover ? olc::Pixel(100, 255, 0) : olc::GREEN);
+		DrawStringDecal({5,975}, "Press d to toggle debug mode", olc::WHITE, { {2.0f},{2.0f} });
+		if (debug)
+		{
+			DrawStringDecal({ 5,5 }, "curr_time: " + std::to_string(curr_time), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,25 }, "time_last_updated: " + std::to_string(time_last_updated), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,45 }, "hover: " + std::to_string(hover), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,65 }, "selected: " + std::to_string(selected), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,85 }, "num_vecs: " + std::to_string(num_vecs), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,105 }, "rotation_per_sec: " + std::to_string(rotation_per_sec), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,125 }, "integral_delta_t: " + std::to_string(integral_delta_t), olc::WHITE, { {2.0f},{2.0f} });
+			DrawStringDecal({ 5,145 }, "drawn_points.size(): " + std::to_string(drawn_points.size()), olc::WHITE, { {2.0f},{2.0f} });
+		}
+		for (int i = 0; i < vertices_screen.size(); i++) DrawLine(vertices_screen[i], vertices_screen[(i + 1) % vertices_screen.size()], olc::Pixel(0, 255, 0, 127));
+		for (int i = 0; i < vertices_screen.size(); i++) FillCircle(vertices_screen[i], 10, i == hover ? olc::Pixel(150, 255, 0) : olc::GREEN);
 		olc::vf2d sum = { 0,0 };
 		int a = 0;
-		for (int i = 0; i < num_vecs; i++)
+		for (int i = 0, a = 0; i < num_vecs; i++)
 		{
 			olc::vf2d pre_sum = sum;
-			sum += VecN(a, time);
-			DrawLine(WorldToScreen(pre_sum), WorldToScreen(sum), olc::YELLOW);
+			sum += VecN(a, curr_time);
+			DrawLine(WorldToScreen(pre_sum), WorldToScreen(sum), olc::MAGENTA);
 			a = a <= 0 ? -a + 1 : -a;
 		}
-		time += fElapsedTime * rotation_per_sec;
-
+		olc::vf2d last_pos = WorldToScreen(sum);
+		int dp_size = drawn_points.size();
+		if (curr_time - time_last_updated < 1)
+		{
+			drawn_points.push_back(last_pos);
+		}
+		else
+		{
+			DrawLine(drawn_points[dp_size - 1], drawn_points[0], olc::Pixel(255, 255, 0));
+		}
+		for (int i = 0; i < dp_size - 1; i++)
+		{
+			DrawLine(drawn_points[i], drawn_points[(i + 1) % dp_size], olc::Pixel(255, 255, 0));
+			//std::cout << i << " " << drawn_points.size() << std::endl;
+		}
+		FillCircle(last_pos, 3, olc::Pixel(255, 0, 0));
+		curr_time += fElapsedTime * rotation_per_sec;
 		return true;
 	}
 };
@@ -184,7 +213,7 @@ int main()
 	//When the easy part is almost as long as the crazy part
 
 
-	FourierApp demo = FourierApp(num_vecs,rotation_per_sec,integral_delta_t);
+	FourierApp demo = FourierApp(num_vecs, rotation_per_sec, integral_delta_t);
 	if (demo.Construct(1000, 1000, 1, 1))
 		demo.Start();
 
