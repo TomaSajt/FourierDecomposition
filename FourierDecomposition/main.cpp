@@ -5,6 +5,8 @@
 #include <vector>
 #include <cmath>
 #include <conio.h>
+#define cpx complex<double>
+
 using namespace std;
 
 class FourierApp : public olc::PixelGameEngine
@@ -23,30 +25,30 @@ public:
 	double rotation_per_sec;
 	double integral_delta_t;
 	vector<olc::vi2d> vertices_screen;
-	vector<complex<double>> vertices_world;
+	vector<cpx> vertices_world;
 	vector<olc::vi2d> drawn_points;
-	map<int, complex<double>> c_vals;
+	map<int, cpx> c_vals;
 	double curr_time = 0;
 	olc::vi2d offset = { 0,0 };
 	double time_last_updated = 0;
 	bool debug = false;
 
-	complex<double> ScreenToWorld(olc::vi2d screenPos) {
+	cpx ScreenToWorld(olc::vi2d screenPos) {
 		return { (double)screenPos.x / ScreenWidth() - 0.5, (double)screenPos.y / ScreenHeight() - 0.5 };
 	}
-	olc::vi2d WorldToScreen(complex<double> worldPos) {
+	olc::vi2d WorldToScreen(cpx worldPos) {
 		return { (int)((worldPos.real() + 0.5) * ScreenWidth()), (int)((worldPos.imag() + 0.5) * ScreenHeight()) };
 	}
 	//Euler, thanks my man
-	complex<double> Cis(double theta) {
+	cpx Cis(double theta) {
 		return { cos(theta), sin(theta) };
 	}
-	complex<double> Lerp(complex<double> a, complex<double> b, double partialTime) {
+	cpx Lerp(cpx a, cpx b, double partialTime) {
 		//Why is this so simple
 		return a * (1 - partialTime) + b * partialTime;
 	}
 	//Epic function defined for [0;1[
-	complex<double> f(double t) {
+	cpx f(double t) {
 		int i = (int)(vertices_world.size() * t);
 		double partialTime = t * vertices_world.size() - i;
 		return Lerp(vertices_world[i], vertices_world[(i + 1) % vertices_world.size()], partialTime);
@@ -54,13 +56,13 @@ public:
 
 
 	//Maths magic 1
-	complex<double> Cn(int n) {
-		complex<double> sum = { 0,0 };
+	cpx Cn(int n) {
+		cpx sum = { 0,0 };
 		for (double t = 0; t < 1; t += integral_delta_t) sum += f(t) * Cis(-n * 2 * M_PI * t) * integral_delta_t;
 		return sum;
 	}
 	//Maths magic 2
-	complex<double> VecN(int n, double t) {
+	cpx VecN(int n, double t) {
 		return c_vals[n] * Cis(n * 2 * M_PI * t);
 	}
 
@@ -141,11 +143,11 @@ public:
 		}
 		for (int i = 0; i < vertices_screen.size(); i++) DrawLine(vertices_screen[i], vertices_screen[(i + 1) % vertices_screen.size()], olc::Pixel(0, 255, 0, 127));
 		for (int i = 0; i < vertices_screen.size(); i++) FillCircle(vertices_screen[i], 10, i == hover ? olc::Pixel(150, 255, 0) : olc::GREEN);
-		complex<double> sum = { 0,0 };
+		cpx sum = { 0,0 };
 		int a = 0;
 		for (int i = 0, a = 0; i < num_vecs; i++)
 		{
-			complex<double> pre_sum = sum;
+			cpx pre_sum = sum;
 			sum += VecN(a, curr_time);
 			DrawLine(WorldToScreen(pre_sum), WorldToScreen(sum), olc::MAGENTA);
 			a = a <= 0 ? -a + 1 : -a;
