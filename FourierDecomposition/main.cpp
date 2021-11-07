@@ -6,6 +6,7 @@
 #include <cmath>
 #include <conio.h>
 #define cpx complex<double>
+#define point olc::vi2d
 
 using namespace std;
 
@@ -24,19 +25,19 @@ public:
 	int num_vecs;
 	double rotation_per_sec;
 	double integral_delta_t;
-	vector<olc::vi2d> vertices_screen;
+	vector<point> vertices_screen;
 	vector<cpx> vertices_world;
-	vector<olc::vi2d> drawn_points;
+	vector<point> drawn_points;
 	map<int, cpx> c_vals;
 	double curr_time = 0;
-	olc::vi2d offset = { 0,0 };
+	point offset = { 0,0 };
 	double time_last_updated = 0;
 	bool debug = false;
 
-	cpx ScreenToWorld(olc::vi2d screenPos) {
+	cpx ScreenToWorld(point screenPos) {
 		return { (double)screenPos.x / ScreenWidth() - 0.5, (double)screenPos.y / ScreenHeight() - 0.5 };
 	}
-	olc::vi2d WorldToScreen(cpx worldPos) {
+	point WorldToScreen(cpx worldPos) {
 		return { (int)((worldPos.real() + 0.5) * ScreenWidth()), (int)((worldPos.imag() + 0.5) * ScreenHeight()) };
 	}
 	//Euler, thanks my man
@@ -47,6 +48,7 @@ public:
 		//Why is this so simple
 		return a * (1 - partialTime) + b * partialTime;
 	}
+
 	//Epic function defined for [0;1[
 	cpx f(double t) {
 		int i = (int)(vertices_world.size() * t);
@@ -61,6 +63,7 @@ public:
 		for (double t = 0; t < 1; t += integral_delta_t) sum += f(t) * Cis(-n * 2 * M_PI * t) * integral_delta_t;
 		return sum;
 	}
+
 	//Maths magic 2
 	cpx VecN(int n, double t) {
 		return c_vals[n] * Cis(n * 2 * M_PI * t);
@@ -68,7 +71,7 @@ public:
 
 	void UpdateCVals() {
 		c_vals.clear();
-		for (int i = -(num_vecs - 1) / 2; i <= num_vecs / 2; i++) c_vals.insert(make_pair(i, Cn(i)));
+		for (int i = -(num_vecs - 1) / 2; i <= num_vecs / 2; i++) c_vals.insert({ i, Cn(i) });
 		drawn_points.clear();
 		time_last_updated = curr_time;
 	}
@@ -140,6 +143,11 @@ public:
 			DrawString({ 5,105 }, "rotation_per_sec: " + to_string(rotation_per_sec), olc::WHITE, 2);
 			DrawString({ 5,125 }, "integral_delta_t: " + to_string(integral_delta_t), olc::WHITE, 2);
 			DrawString({ 5,145 }, "drawn_points.size(): " + to_string(drawn_points.size()), olc::WHITE, 2);
+			string a = "";
+			for (auto& pair : c_vals) {
+				a += to_string(pair.first) + ": " + to_string(pair.second.real()) + " + " + to_string(pair.second.imag()) + "i\n";
+			}
+			DrawString({ 5,165 }, "c_vals: " + a, olc::WHITE, 2);
 		}
 		for (int i = 0; i < vertices_screen.size(); i++) DrawLine(vertices_screen[i], vertices_screen[(i + 1) % vertices_screen.size()], olc::Pixel(0, 255, 0, 127));
 		for (int i = 0; i < vertices_screen.size(); i++) FillCircle(vertices_screen[i], 10, i == hover ? olc::Pixel(150, 255, 0) : olc::GREEN);
@@ -152,7 +160,7 @@ public:
 			DrawLine(WorldToScreen(pre_sum), WorldToScreen(sum), olc::MAGENTA);
 			a = a <= 0 ? -a + 1 : -a;
 		}
-		olc::vi2d last_pos = WorldToScreen(sum);
+		point last_pos = WorldToScreen(sum);
 		int dp_size = drawn_points.size();
 		if (curr_time - time_last_updated < 1)
 		{

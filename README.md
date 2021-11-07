@@ -1,2 +1,2 @@
 # FourierDecomposition
-Spinny thingy using [Fourier Transform](https://en.wikipedia.org/wiki/Fourier_transform)s
+Spinny thingy using [Fourier Transform](https://en.wikipedia.org/wiki/Fourier_transform)s ([Discrete Fourier Transform](https://en.wikipedia.org/wiki/Discrete_Fourier_transform]))
